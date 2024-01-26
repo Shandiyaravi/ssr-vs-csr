@@ -3,21 +3,26 @@ import { API_KEY } from "@/constants";
 import styles from "../page.module.css";
 import SSRReload from "@/components/ssrReload";
 import { imageUrlToBase64 } from "@/helpers";
-
 async function getData() {
-  // Exercise 1 - Fetch the data here...
-  //
-  //
-  // Exercise 2 - Optimize the image loading here...
-  //
-  //
-  // Uncomment this when you're ready
-  // return json
+  const response = await fetch(
+    `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&count=1&thumbs=true`,
+    { cache: "no-cache" }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
+  }
+  const [json] = await response.json();
+  await optimizeImageLoading(json);
+  return json;
 }
-
+async function optimizeImageLoading(data) {
+  if (data && data.url) {
+    const base64Image = await imageUrlToBase64(data.url);
+    data.base64Image = base64Image;
+  }
+}
 export default async function SSR() {
   const data = await getData();
-
   return (
     <main className={styles.main}>
       <div className={styles.title}>SERVER-SIDE RENDERED</div>

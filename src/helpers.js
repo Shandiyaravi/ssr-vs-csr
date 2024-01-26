@@ -1,5 +1,5 @@
 export const imageUrlToBase64 = async (url) => {
-  const image = await fetch({ url: url, method: "GET", encoding: null }),
+  const image = await fetch( url, {method: "GET", encoding: null }),
     img = await image.arrayBuffer(),
     imgBuffer = Buffer.from(img),
     imgBase64 = imgBuffer.toString("base64"),
